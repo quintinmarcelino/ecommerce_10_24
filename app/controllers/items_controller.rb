@@ -24,18 +24,20 @@ class ItemsController < ApplicationController
 
   # GET /items/1/edit
   def edit
+    @item = Item.find(params[:id])
+    @item = @store.items.find(params[:id])
   end
 
   # POST /items
   # POST /items.json
   def create
-    @store = Store.find(params[:store_id])
-    @item = @store.items.create(items_params)
-    redirect_to store_path (@store)
+    @item = Item.new(params[:item])
+    @item = @store.items.create([:item])
 
     respond_to do |format|
       if @item.save
         format.html { redirect_to @item, notice: 'Item was successfully created.' }
+        format.html { redirect_to [@store, @item], notice: 'Item was successfully created.'}
         format.json { render :show, status: :created, location: @item }
       else
         format.html { render :new }
@@ -47,12 +49,13 @@ class ItemsController < ApplicationController
   # PATCH/PUT /items/1
   # PATCH/PUT /items/1.json
   def update
-    @items = Item.find(params[:id])
-    @items = @store.items.find(params[:id])
+    @item = Item.find(params[:id])
+    @item = @store.items.find(params[:id])
 
     respond_to do |format|
       if @item.update(item_params)
         format.html { redirect_to @item, notice: 'Item was successfully updated.' }
+        format.html { redirect_to [@store, @item], notice: 'Item was successfully created'}
         format.json { render :show, status: :ok, location: @item }
       else
         format.html { render :edit }
@@ -68,7 +71,7 @@ class ItemsController < ApplicationController
     @item = @store.items.find(params[:id])
     @item.destroy
     respond_to do |format|
-      format.html { redirect_to items_url, notice: 'Item was successfully destroyed.' }
+      format.html { redirect_to items_url, notice: 'Item was successfully deleted.' }
       format.html { redirect_to store_items_path(@store)}
       format.json { head :no_content }
     end
